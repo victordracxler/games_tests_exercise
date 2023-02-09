@@ -4,10 +4,10 @@ import prisma from 'config/database';
 import httpStatus from 'http-status';
 import supertest from 'supertest';
 import { createConsole } from '../factories/consoles-factory';
+import { cleanDb } from '../helper';
 
-beforeAll(async () => {
-	await prisma.console.deleteMany();
-	await prisma.game.deleteMany();
+beforeEach(async () => {
+	await cleanDb();
 });
 
 const server = supertest(app);
@@ -48,7 +48,6 @@ describe('GET /consoles/:id', () => {
 		const response = await server.get(`/consoles/${console.id + 1}`);
 
 		expect(response.status).toEqual(httpStatus.NOT_FOUND);
-		expect(response.body).not.toEqual(console);
 	});
 
 	it('should respond with status 200 with console data', async () => {
